@@ -1,1 +1,87 @@
 
+writup by W0lf
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+#Directory And File Fuzzing 
+## THONG TIN BAI LAB
+- Platform: HackTheBox
+- Module: Web Fuzzing
+
+Directory And File Fuzzing 
+1. Khái niệm
+Directory và File Fuzzing là kỹ thuật sử dụng wordlist để dò tìm các thư mục và tệp tin ẩn trên máy chủ web.
+Mục đích:
+- Phát hiện thư mục và tệp tin không được liên kết công khai.
+- Tìm tệp sao lưu, cấu hình, logs chứa dữ liệu nhạy cảm.
+- Phát hiện trang quản trị, môi trường thử nghiệm.
+- Tìm các endpoint hoặc chức năng ẩn.
+2. Wordlist
+Wordlist chứa danh sách tên thư mục và tệp tin tiềm năng để công cụ fuzzing kiểm tra.
+Các wordlist phổ biến trong SecLists:
+  Wordlist	                                            Mục đích
+common.txt	                                    Tên thư mục và tệp phổ biến
+DirBuster-2007_directory-list-2.3-medium.txt	  Dò tìm thư mục
+raft-large-directories.txt	                    Dò tìm nhiều thư mục
+big.txt	                                        Dò tìm thư mục và tệp tin
+3. Công cụ ffuf
+ffuf là công cụ fuzzing, sử dụng wordlist để gửi nhiều HTTP request đến máy chủ.
+4. Directory Fuzzing
+  ffuf -w /usr/share/seclists/Discovery/Web-Content/DirBuster-2007_directory-list-2.3-medium.txt -u http://IP:PORT/FUZZ
+  -w: Đường dẫn wordlist.
+  -u: URL mục tiêu.
+  -FUZZ: Vị trí thay thế bằng từng từ trong wordlist.
+5. File Fuzzing
+ffuf -w /usr/share/seclists/Discovery/Web-Content/common.txt -u http://IP:PORT/w2ksvrus/FUZZ -e .php,.html,.txt,.bak,.js -v
+
+################################################################################################################################################################
+TARTGET: <IP>:<PORT>
+Question 1.
+Within the "webfuzzing_hidden_path" path on the target system (ie http://IP:PORT/webfuzzing_hidden_path/), fuzz for folders and then files to find the flag.
+
+solution 
+use ffuf -u "http://<IP><PORT>/webfuzzing_hidden_path/FUZZ" -w /home/SecLists/Discovery/Web-Content/common.txt                                  
+
+        /'___\  /'___\           /'___\       
+       /\ \__/ /\ \__/  __  __  /\ \__/       
+       \ \ ,__\\ \ ,__\/\ \/\ \ \ \ ,__\      
+        \ \ \_/ \ \ \_/\ \ \_\ \ \ \ \_/      
+         \ \_\   \ \_\  \ \____/  \ \_\       
+          \/_/    \/_/   \/___/    \/_/       
+
+       v2.1.0-dev
+________________________________________________
+
+.....
+.....
+________________________________________________
+
+flag                    [Status: 301, Size: 0, Words: 1, Lines: 1, Duration: 196ms]
+------>>> find flag
+fuff -w /home/SecLists/Discovery/Web-Content/common.txt -u "http://<IP><PORT>/webfuzzing_hidden_path/flag/FUZZ" -e .php, .html, .bak, .js -v 
+
+
+        /'___\  /'___\           /'___\       
+       /\ \__/ /\ \__/  __  __  /\ \__/       
+       \ \ ,__\\ \ ,__\/\ \/\ \ \ \ ,__\      
+        \ \ \_/ \ \ \_/\ \ \_\ \ \ \ \_/      
+         \ \_\   \ \_\  \ \____/  \ \_\       
+          \/_/    \/_/   \/___/    \/_/       
+
+       v2.1.0-dev
+________________________________________________
+
+.....
+.....
+________________________________________________
+
+index.html              [Status: 200, Size: 104, Words: 6, Lines: 2, Duration: 189ms]
+index.html              [Status: 200, Size: 104, Words: 6, Lines: 2, Duration: 196ms]
+flag.html               [Status: 200, Size: 100, Words: 1, Lines: 1, Duration: 196ms]
+------>>> find flag
+Ban tim ra duoc flag.html
+
+curl http://<IP>:<PORT>/webfuzzing_hidden_path/flag/flag.html                                                                                
+HTB{....}
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
